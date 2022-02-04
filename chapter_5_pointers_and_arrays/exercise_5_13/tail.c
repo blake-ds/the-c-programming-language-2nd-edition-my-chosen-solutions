@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     } else {
         printf("NUMBER %d | VERBOSE %d\n", number, verbose);
         while ((c = get_line(line, MAXLINE, verbose)) > 0) {
-            all_lines[lineno] = strdup(line);
+            all_lines[lineno] = strfdup(line);
             lineno++;
         }
     }
