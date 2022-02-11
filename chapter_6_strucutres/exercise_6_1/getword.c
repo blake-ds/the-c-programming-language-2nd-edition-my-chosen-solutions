@@ -11,12 +11,27 @@ int main(int argc, char *argv[]) {
     int output, lim = MAX;
     char word[MAXWORD];
 
-    output = getword(word, lim);
-    printf("OUTPUT: %c\n", output);
+    while ((output = getword(word, MAXWORD)) != EOF) {
+        printf("OUTPUT: %c\n", output);
+    }
+}
+
+int comment(void) {
+    int c;
+    while ((c = getch()) != EOF) {
+        if (c == '*') {
+            if ((c = getch()) == '/') {
+                break;
+            } else {
+                ungetch(c);
+            }
+        }
+    }
+    return c;
 }
 
 int getword(char *word, int lim) {
-    int c, getch(void);
+    int c, d, comment(void), getch(void);
     void ungetch(int);
     char *w = word;
 
@@ -26,19 +41,33 @@ int getword(char *word, int lim) {
     if (c != EOF) {
         *w++ = c;
     }
-    if (!isalpha(c)) {
-        *w = '\0';
-        return c;
-    }
+    if (isalpha(c) || c == '_' || c == '#') {
+        for (; --lim > 0; w++) {
+            if (!isalnum(*w = getch()) && *w != '_') {
+                ungetch(*w);
+                break;
+            }
+        }
 
-    for (; --lim > 0; w++) {
-        if (!isalnum(*w = getch())) {
-            ungetch(*w);
-            break;
+    } else if (c == '\'' || c == '"') {
+        for (; --lim > 0; w++) {
+            if ((*w = getch()) == '\\') {
+                *++w = getch();
+            } else if (*w == c) {
+                w++;
+                break;
+            } else if (*w == EOF) {
+                break;
+            }
+        }
+    } else if (c == '/') {
+        if ((d = getch()) == '*') {
+            c = comment();
+        } else {
+            ungetch(d);
         }
     }
-    *w = '\0';
 
-    printf("GHERER\n");
+    *w = '\0';
     return word[0];
 }

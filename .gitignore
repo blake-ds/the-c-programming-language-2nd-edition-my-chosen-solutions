@@ -2,7 +2,7 @@
 
 # out
 a.out
-
+scratch.c
 # debug
 cmake-build-debug
 
